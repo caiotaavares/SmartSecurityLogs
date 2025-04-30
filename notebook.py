@@ -491,6 +491,61 @@ plt.ylabel("Actual")
 plt.show()
 
 # %%
+# Feature Importance RANDOM FOREST
+# -----------------------------------------------------------------
+import pandas as pd
+import matplotlib.pyplot as plt
+
+importance = random_forest_model.feature_importances_
+feature_names = x_tr.columns
+
+# feat_imp = pd.Series(importance, index=feature_names)
+# feat_imp.nlargest(10).plot(kind='barh')
+
+feat_imp_df = pd.DataFrame({
+    'Feature': feature_names,
+    'Importance': importance
+}).sort_values(by='Importance', ascending=False)
+
+feat_imp_df.plot(kind='barh', x='Feature', y='Importance', figsize=(10, 6))
+
+# %%
+# LIME
+# -----------------------------------------------------------------
+from lime.lime_tabular import LimeTabularExplainer
+
+# Explicador LIME
+explainer = LimeTabularExplainer(
+    training_data=x_tr.values,
+    feature_names=x_tr.columns,
+    class_names=['Normal', 'Anomalous'],
+    mode='classification'
+)
+
+i=0
+exp = explainer.explain_instance(   x_ts.iloc[i], 
+                                    random_forest_model.predict_proba)
+print(exp.as_list())
+x_ts.iloc[i]
+# [
+#     ('count_embed_domain_url <= 0.00', 0.09893277465424392), 
+#     ('count-_url > 0.00', 0.07151532225463739), 
+#     ('count%_content <= 0.00', -0.06383856011166143), 
+#     ('count_dot_url > 2.00', 0.06010114070404867), 
+#     ('is_encoded_content <= 0.00', -0.0548380231028701), 
+#     ('special_count_url > 13.00', 0.05470434013571856), 
+#     ('count-digits_url > 8.00', 0.052412352247600394), 
+#     ('is_encoded_url > 0.00', 0.04971785525615355), 
+#     ('count%_url > 0.00', 0.048248627923435435), 
+#     ('number_of_parameters_url > 1.00', -0.04004551471890278)
+# ]
+# EXPLICAÇÂO
+# ('<condição da feature>' '<numero de parametros>', <peso da influência na previsão>)
+# O valor numérico (peso) mostra o quanto aquela condição puxou a previsão para a classe predita.
+#     Valor positivo → puxou a previsão para "Anomalous" (ataque).
+#     Valor negativo → puxou a previsão para "Normal" (sem ataque).
+
+# %%
 # K-NEAREST NEIGHBOR
 # -----------------------------------------------------------------
 from sklearn.neighbors import KNeighborsClassifier
