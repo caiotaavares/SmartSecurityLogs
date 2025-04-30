@@ -6,7 +6,6 @@
 # Resultado esperado: 
 #   Taxas de precisão, recall e falsos positivos comparadas em ambiente simulado com tráfego de API.
 # %%
-# ----------------------------------------------------------------
 # CARREGAR O DATASET
 # ----------------------------------------------------------------
 import pandas as pd
@@ -14,7 +13,6 @@ csic_data = pd.read_csv('/home/caiotavares/Documents/unesp/tcc/git/smartlogs/csi
 # csic_data.head()
 
 # %%
-# ----------------------------------------------------------------
 # VERIFICAÇÃO DOS TIPOS DE DADOS
 # ----------------------------------------------------------------
 import seaborn as sns
@@ -39,7 +37,6 @@ X = X[feature_names]
 Y = X['Class']
 
 # %%
-# ----------------------------------------------------------------
 # VARIÁVEIS CATEGÓRICAS
 # ---------------------------------------------------------------
 # identificar quais colunas em X são variáveis categóricas,
@@ -71,7 +68,6 @@ print(object_cols)
 #         OneHotEncoder (se for nominal/categórica)
 
 # %%
-# ----------------------------------------------------------------
 # TRATAMENTO DE DADOS DA URL
 # ----------------------------------------------------------------
 from urllib.parse import urlparse
@@ -285,7 +281,6 @@ def unusual_character_ratio(url):
 
 
 # %%
-# ----------------------------------------------------------------
 # JUNTA TUDO NAS NOVAS COLUNAS
 # ----------------------------------------------------------------
 
@@ -356,7 +351,6 @@ X.head()
 X.tail()
 
 # %%
-# ----------------------------------------------------------------
 # APLICANDO AS FUNÇÕES DE PROCESSAMENTO ao content
 # ----------------------------------------------------------------
 def apply_to_content(content,function):
@@ -401,7 +395,6 @@ for feature_name in selected_features_df.columns:
 # %%
 X.columns
 # %%
-# -----------------------------------------------------------------
 # CRIAÇÃO DO DATASET FINAL
 # -----------------------------------------------------------------
 
@@ -422,7 +415,6 @@ X[labels]
 y = X['classification']
 
 # %%
-# -----------------------------------------------------------------
 # SEPARAÇÃO DO DATASET EM TREINO E TESTE
 # -----------------------------------------------------------------
 from sklearn.model_selection import train_test_split
