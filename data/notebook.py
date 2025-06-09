@@ -9,7 +9,7 @@
 # CARREGAR O DATASET
 # ----------------------------------------------------------------
 import pandas as pd
-csic_data = pd.read_csv('/home/caiotavares/Documents/unesp/tcc/git/smartlogs/csic_database.csv')
+csic_data = pd.read_csv('/home/caiotavares/Documents/unesp/tcc/git/smartlogs/data/csic_database.csv')
 # csic_data.head()
 
 # %%
@@ -614,3 +614,8 @@ plt
 # Artificial Neural Network(ANN)
 # Convolutional Neural Network(CNN)
 # Long Short-Term Memory(LSTM)
+# %%
+import joblib
+joblib.dump(random_forest_model, 'random_forest_model.pkl')
+
+# %%
