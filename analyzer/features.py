@@ -5,8 +5,7 @@ class FeatureExtractor:
     def __init__(self):
         # Lista de nomes de features, sempre na mesma ordem do modelo!
         self.feature_names = [
-            # Features da URL
-            'count_dot_url', 
+            'count_dot_url',
             'count_dir_url', 
             'count_embed_domain_url', 
             'count-http',
@@ -20,32 +19,27 @@ class FeatureExtractor:
             'count-digits_url', 
             'count-letters_url', 
             'number_of_parameters_url',
-            # 'number_of_fragments_url', 
             'is_encoded_url',
             'special_count_url',
             'unusual_character_ratio_url',
-            
-            # Metodo de codificação, placeholder para o método
+            # Method
             'Method_enc',
-            
-            # Features do content
-            'count_dot_content', 
-            # 'count_dir_content', 
-            # 'count_embed_domain_content', 
-            'count%_content', 
-            # 'count?_content',
-            'count-_content', 
-            'count=_content', 
-            'sus_content', 
+            # Content
+            'count_dot_content',
+            'count%_content',
+            'count-_content',
+            'count=_content',
+            'sus_content',
             'count_digits_content',
-            'count_letters_content', 
-            'content_length', 
-            'is_encoded_content', 
+            'count_letters_content',
+            'content_length',
+            'is_encoded_content',
             'special_count_content'
         ]
 
     # ----- Função principal -----
     def extract(self, url, method, content):
+        print(f"FEATUREEXTRACTOR(extract) - Extraindo features da URL: {url} com método: {method}")
         features = {}
         # Preencha tudo com zero
         for name in self.feature_names:
@@ -91,11 +85,15 @@ class FeatureExtractor:
         features['special_count_content'] = urlfeat.count_special_characters(content)
 
         # Retorne na ordem correta!
+        print(f"FEATUREEXTRACTOR(extract) - Features extraídas: {features}")
         return features
 
     def extract_df(self, url, method, content):
         """
         Retorna um DataFrame pronto para o modelo.
         """
+        print(f"PORRA")
         features = self.extract(url, method, content)
+        print(f"FEATUREEXTRACTOR(extract_df) - {features}")
         return pd.DataFrame([features], columns=self.feature_names)
+

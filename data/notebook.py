@@ -398,17 +398,36 @@ X.columns
 # CRIAÇÃO DO DATASET FINAL
 # -----------------------------------------------------------------
 
-labels = [      'count_dot_url', 'count_dir_url', 'count_embed_domain_url', 'count-http',
-                'count%_url', 'count?_url', 'count-_url', 'count=_url', 'url_length', 'hostname_length_url',
-                'sus_url', 'count-digits_url', 'count-letters_url', 'number_of_parameters_url',
-                'is_encoded_url','special_count_url','unusual_character_ratio_url',
+labels = [      'count_dot_url', 
+                'count_dir_url', 
+                'count_embed_domain_url', 
+                'count-http',
+                'count%_url', 
+                'count?_url', 
+                'count-_url', 
+                'count=_url', 
+                'url_length', 
+                'hostname_length_url',
+                'sus_url', 
+                'count-digits_url', 
+                'count-letters_url', 
+                'number_of_parameters_url',
+                'is_encoded_url',
+                'special_count_url',
+                'unusual_character_ratio_url',
                 # Method
                 'Method_enc',
                 # Content
-                'count_dot_content','count%_content',
-                'count-_content','count=_content','sus_content','count_digits_content',
-                'count_letters_content','content_length',
-                'is_encoded_content','special_count_content']
+                'count_dot_content',
+                'count%_content',
+                'count-_content',
+                'count=_content',
+                'sus_content',
+                'count_digits_content',
+                'count_letters_content',
+                'content_length',
+                'is_encoded_content',
+                'special_count_content']
 X[labels]
 
 # y receberá a variável de classificação
@@ -443,6 +462,7 @@ print('Treinando o modelo Random Forest....')
 # Treinando o modelo Random Forest usando 
 # os dados de treino (x_tr, y_tr).
 random_forest_model.fit(x_tr,y_tr)
+
 print('Feito!')
 
 # Usa o modelo SVC_model para prever as classes de cada exemplo 
@@ -450,7 +470,9 @@ print('Feito!')
 # Aqui o modelo tenta adivinhar a classe (ataque ou não) de cada entrada
 # nos dados de teste x_ts.
 RT_predictions = random_forest_model.predict(x_ts)
-
+# %%
+# import joblib
+# joblib.dump(random_forest_model, 'random_forest_model.pkl')
 # %%
 # Avaliando o modelo RANDOM FOREST
 # -----------------------------------------------------------------
@@ -619,3 +641,128 @@ import joblib
 joblib.dump(random_forest_model, 'random_forest_model.pkl')
 
 # %%
+# O dicionário de features
+import pandas as pd
+
+# O dicionário de features
+porra = {
+    'count_dot_url': 1,  # Um ponto é normal, não muitos subdomínios
+    'count_dir_url': 1,  # URL simples com um diretório
+    'count_embed_domain_url': 0,  # Sem domínios embutidos
+    'count-http': 1,  # Um "http" é comum
+    'count%_url': 0,  # Sem caracteres '%', típicos de URLs codificadas
+    'count?_url': 0,  # Sem parâmetros, não é uma URL manipulada
+    'count-_url': 0,  # Sem hífens, que podem ser comuns em URLs manipuladas
+    'count=_url': 0,  # Sem sinais de "=" que podem indicar manipulação de parâmetros
+    'url_length': 30,  # Comprimento moderado, não muito longo nem muito curto
+    'hostname_length_url': 15,  # Comprimento razoável do domínio
+    'sus_url': 0,  # Nenhuma palavra suspeita na URL
+    'count-digits_url': 0,  # Nenhum número na URL
+    'count-letters_url': 15,  # Letras presentes na URL
+    'number_of_parameters_url': 0,  # Sem parâmetros na URL
+    'is_encoded_url': 0,  # Não é uma URL codificada
+    'special_count_url': 3,  # Poucos caracteres especiais
+    'unusual_character_ratio_url': 0.05,  # Baixa proporção de caracteres incomuns
+    'Method_enc': 0,  # Método "GET" ou "POST", não alterado
+    'count_dot_content': 0,  # Sem pontos adicionais no conteúdo
+    'count%_content': 0,  # Sem percentuais no conteúdo
+    'count-_content': 0,  # Sem hífens no conteúdo
+    'count=_content': 0,  # Sem sinais de "=" no conteúdo
+    'sus_content': 0,  # Nenhuma palavra suspeita no conteúdo
+    'count_digits_content': 0,  # Sem números no conteúdo
+    'count_letters_content': 10,  # Letras presentes no conteúdo
+    'content_length': 50,  # Tamanho de conteúdo moderado
+    'is_encoded_content': 0,  # Conteúdo não codificado
+    'special_count_content': 2  # Poucos caracteres especiais no conteúdo
+}
+
+# Criando um DataFrame a partir do dicionário 'porra'
+input_data = pd.DataFrame([porra], columns=feature_names)
+    
+# Verifique a entrada antes de fazer a predição
+print("Input Data:")
+print(input_data)
+# Fazendo a previsão
+predictions = random_forest_model.predict(input_data)
+
+# Exibindo o resultado da previsão
+print("Previsão:", predictions)
+
+import matplotlib.pyplot as plt
+
+# Obter a importância das características
+importances = random_forest_model.feature_importances_
+
+# Criar um gráfico de barras
+plt.figure(figsize=(10, 6))
+plt.barh(labels, importances)
+plt.xlabel("Importância das Características")
+plt.title("Importância das Características para o Modelo Random Forest")
+plt.show()
+
+
+# %%
+from lime.lime_tabular import LimeTabularExplainer
+
+# Explicador LIME
+explainer = LimeTabularExplainer(
+    training_data=x_tr.values,
+    feature_names=x_tr.columns,
+    class_names=['Normal', 'Anomalous'],
+    mode='classification'
+)
+
+exp = explainer.explain_instance(input_data.values[0], random_forest_model.predict_proba)
+print(exp.as_list())
+
+
+# %%
+# Dicionário de exemplo para "Normal"
+normal_example = {'count_dot_url': 2, 'count_dir_url': 4, 'count_embed_domain_url': 0, 'count-http': 1, 'count%_url': 0, 'count?_url': 0, 'count-_url': 0, 'count=_url': 0, 'url_length': 59, 'hostname_length_url': 14, 'sus_url': 10, 'count-digits_url': 7, 'count-letters_url': 41, 'number_of_parameters_url': 0, 'is_encoded_url': 0, 'special_count_url': 10, 'unusual_character_ratio_url': 0.13559322033898305, 'Method_enc': 0, 'count_dot_content': 0, 'count%_content': 0, 'count-_content': 0, 'count=_content': 0, 'sus_content': 0, 'count_digits_content': 0, 'count_letters_content': 0, 'content_length': 0, 'is_encoded_content': 0, 'special_count_content': 0}
+
+# Convertendo o dicionário para um DataFrame
+normal_example_df = pd.DataFrame([normal_example], columns=x_tr.columns)
+
+# Fazendo a previsão
+prediction = random_forest_model.predict(normal_example_df)
+print("Previsão para o exemplo Normal:", prediction)
+
+# %%
+
+normal_example = {
+    'count_dot_url': 2, 
+    'count_dir_url': 4, 
+    'count_embed_domain_url': 0, 
+    'count-http': 1, 
+    'count%_url': 0, 
+    'count?_url': 0, 
+    'count-_url': 0, 
+    'count=_url': 0, 
+    'url_length': 48, 
+    'hostname_length_url': 0, 
+    'sus_url': 10, 
+    'count-digits_url': 7, 
+    'count-letters_url': 41, 
+    'number_of_parameters_url': 0,
+    'is_encoded_url': 0, 
+    'special_count_url': 10, 
+    'unusual_character_ratio_url': 0.13559322033898305, 
+    'Method_enc': 0, 
+    'count_dot_content': 0, 
+    'count%_content': 0, 
+    'count-_content': 0, 
+    'count=_content': 0, 
+    'sus_content': 0, 
+    'count_digits_content': 0, 
+    'count_letters_content': 0, 
+    'content_length': 0, 
+    'is_encoded_content': 0, 
+    'special_count_content': 0
+}
+
+# Convertendo o dicionário para um DataFrame
+normal_example_df = pd.DataFrame([normal_example], columns=x_tr.columns)
+
+# Fazendo a previsão
+prediction = random_forest_model.predict(normal_example_df)
+print("Previsão para o exemplo Normal:", prediction)

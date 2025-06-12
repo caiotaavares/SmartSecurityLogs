@@ -29,17 +29,22 @@ class ProxyServer:
         """
         Rota que intercepta e encaminha as requisições.
         """
+        print(f"PROXY - Interceptando requisição para: {path}")
         method = request.method
         headers = dict(request.headers)
         body = request.get_data()
         params = request.args
-
-        # Analisa a requisição
+        
         analise = self.analyzer.analyze(request)
         self.logs.append(analise)
 
         # Monta a URL do backend real
         backend_url = f"http://{self.backend_host}:{self.backend_port}/{path}"
+        print(f"PROXY - REQUISICAO RECEBIDA: {method} {path}")
+        print(f"PROXY - HEADERS: {headers}")
+        print(f"PROXY - BODY: {body}")
+        print(f"PROXY - PARAMS: {params}")
+        print(f"PROXY - ANALISE: {analise}")
 
         # Encaminha a requisição para o backend original
         resp = requests.request(
@@ -65,4 +70,4 @@ class ProxyServer:
         return html
 
     def run(self, port=8080):
-        self.app.run(port=port)
+        self.app.run(port=port, debug=True, use_reloader=False)

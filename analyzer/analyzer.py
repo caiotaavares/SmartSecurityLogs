@@ -17,7 +17,7 @@ class AttackAnalyzer:
         method = req.method
         url = req.url
         headers = dict(req.headers)
-        content = req.get_data(as_text=True)
+        content = "modo=registro&login=amant&password=coyotera&nombre=Aleardo&apellidos=Sellares+Brihuega&email=AND+1%3D1&dni=15074727K&direccion=Calle+Rodrigo+De+Triana+189%2C+6E&ciudad=Ametlla+del+Vall%E8s%2C+L%27&cp=44597&provincia=Guadalajara&ntc=2988316222731904&B1=Registrar"
         
         # Extrai as features usando a classe FeatureExtractor
         features = self.feature_extractor.extract(url, method, content)
