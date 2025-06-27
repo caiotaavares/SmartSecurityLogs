@@ -17,6 +17,7 @@ class FeatureExtractor:
             # Features da URL completa (para query, etc.)
             'special_count_path', 'unusual_character_ratio_path',
             # Feature do método
+            'sus_query',
             'Method_enc'
         ]
 
@@ -26,6 +27,7 @@ class FeatureExtractor:
         """
         path = urlparse(full_url).path
         features = {}
+        query = urlparse(full_url).query
 
         # --- CORREÇÃO CRÍTICA ---
         # As chaves do dicionário devem corresponder EXATAMENTE aos nomes em self.feature_names
@@ -49,6 +51,10 @@ class FeatureExtractor:
         features['number_of_parameters_url'] = urlfeat.number_of_parameters(full_url)
         features['is_encoded_url'] = urlfeat.is_encoded(full_url)
 
+        # query
+        features['sus_path'] = urlfeat.suspicious_words(path)
+        features['sus_query'] = urlfeat.suspicious_words(query)
+        
         # Feature do método
         try:
             features['Method_enc'] = self.le_method.transform([method])[0]

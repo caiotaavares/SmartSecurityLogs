@@ -56,7 +56,12 @@ def unusual_character_ratio(url):
     if total_characters == 0: return 0
     unusual_characters = re.sub(r'[a-zA-Z0-9\s\-._]', '', url)
     return len(unusual_characters) / total_characters
-
+# Adicione esta nova função para extrair apenas a query
+def get_query(url):
+    try:
+        return urlparse(url).query
+    except:
+        return ""
 # %%
 # --- ETAPA 1: Limpar a coluna URL para remover o " HTTP/1.1" no final ---
 print("Limpando a coluna de URL...")
@@ -99,6 +104,9 @@ X['unusual_character_ratio_path'] = X['path'].apply(unusual_character_ratio)
 X['number_of_parameters_url'] = X['URL_limpa'].apply(number_of_parameters)
 X['is_encoded_url'] = X['URL_limpa'].apply(is_encoded)
 
+# query strings
+X['query'] = X['URL_limpa'].apply(get_query)
+X['sus_query'] = X['query'].apply(suspicious_words)
 
 print("Extração de features concluída.")
 
@@ -119,7 +127,7 @@ labels = [
     'count%_path', 'count?_path', 'count-_path', 'count=_path', 'path_length',
     'sus_path', 'count-digits_path', 'count-letters_path', 
     'number_of_parameters_url', 'is_encoded_url', 'special_count_path',
-    'unusual_character_ratio_path', 'Method_enc'
+    'unusual_character_ratio_path', 'sus_query', 'Method_enc'
 ]
 y = X['classification']
 X_final = X[labels]
@@ -129,7 +137,7 @@ print("\nFeatures selecionadas para o novo modelo:", X_final.columns.tolist())
 # 6. TREINO DO MODELO
 # -----------------------------------------------------------------
 x_tr, x_ts, y_tr, y_ts = train_test_split(X_final, y, test_size=0.3, random_state=42)
-model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
+model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1, class_weight='balanced')
 print('\nA treinar o modelo Random Forest (Path-Only)...')
 model.fit(x_tr, y_tr)
 print('Treino concluído!')
