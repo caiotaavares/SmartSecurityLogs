@@ -1,41 +1,44 @@
-import analyzer.features as features
 import joblib
 import pandas as pd
+from . import features
 
 class AttackAnalyzer:
-    def __init__(self, model_path='data/random_forest_model.pkl'):
-        # Carrega o modelo treinado
-        self.model = joblib.load(model_path)
-        # Aqui, adicione atributos, listas de features e codificadores se necessário
-        self.feature_extractor = features.FeatureExtractor()
-
-    def extract_features(self, req):
-        """
-        Extrai as features da requisição, com o mesmo pré-processamento usado no notebook.
-        """
-        # Exemplo básico: você deve replicar toda sua pipeline de features!
-        method = req.method
-        url = req.url
-        headers = dict(req.headers)
-        content = "modo=registro&login=amant&password=coyotera&nombre=Aleardo&apellidos=Sellares+Brihuega&email=AND+1%3D1&dni=15074727K&direccion=Calle+Rodrigo+De+Triana+189%2C+6E&ciudad=Ametlla+del+Vall%E8s%2C+L%27&cp=44597&provincia=Guadalajara&ntc=2988316222731904&B1=Registrar"
+    def __init__(self,
+                 # Carrega os ficheiros corretos por defeito
+                 model_path='data/path_only_model.pkl',
+                 method_encoder_path='data/path_only_method_encoder.pkl'):
         
-        # Extrai as features usando a classe FeatureExtractor
-        features = self.feature_extractor.extract(url, method, content)
-        features_df = pd.DataFrame([features])  
-        return features_df
+        print("ANALYZER (Path-Only) - A carregar modelo e codificador...")
+        self.model = joblib.load(model_path)
+        le_method = joblib.load(method_encoder_path)
+        
+        self.feature_extractor = features.FeatureExtractor(le_method)
+        print("ANALYZER (Path-Only) - Pronto.")
 
+    # No método analyze da classe AttackAnalyzer
     def analyze(self, req):
         """
-        Recebe o request do Flask, processa, faz a predição e retorna resultado.
+        Analisa a requisição focando exclusivamente no path da URL e no método.
         """
-        features_df = self.extract_features(req)
-        pred = self.model.predict(features_df)[0]
-        resultado = "Normal" if pred == 0 else "Ataque"  # Ajuste para sua codificação de classe
+        method = req.method
+        
+        # --- MUDANÇA ---
+        # O extrator agora precisa da URL completa para replicar a lógica do treino.
+        # Vamos assumir que req.url já contém a URL completa (sem " HTTP/1.1").
+        # Se req.url puder ter o sufixo, limpe-o aqui também.
+        full_url = req.url 
 
-        # Para logging/dash:
+        # A chamada para o extrator agora passa a URL completa.
+        features_df = self.feature_extractor.extract_df(full_url, method)
+        
+        prediction_code = self.model.predict(features_df)[0]
+        probabilities = self.model.predict_proba(features_df)[0]
+        resultado = "Anómalo" if prediction_code == 1 else "Normal"
+        
         return {
             "url": req.url,
-            "metodo": req.method,
-            "resultado": resultado,
-            "body": req.get_data(as_text=True)
+            "metodo": method,
+            "classificacao": resultado,
+            "confianca": { "normal": round(probabilities[0], 4), "anomalo": round(probabilities[1], 4) },
+            "payload": req.get_data(as_text=True) 
         }

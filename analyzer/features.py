@@ -1,99 +1,66 @@
-import analyzer.urlfeatures.urlfeatures as urlfeat
 import pandas as pd
+from urllib.parse import urlparse
+from .urlfeatures import urlfeatures as urlfeat
 
 class FeatureExtractor:
-    def __init__(self):
-        # Lista de nomes de features, sempre na mesma ordem do modelo!
+    def __init__(self, le_method):
+        self.le_method = le_method
+
+        # --- CORREÇÃO CRÍTICA ---
+        # Esta lista DEVE ser idêntica, em nomes e ordem, à lista de colunas
+        # usada para treinar o modelo no seu notebook.
         self.feature_names = [
-            'count_dot_url',
-            'count_dir_url', 
-            'count_embed_domain_url', 
-            'count-http',
-            'count%_url', 
-            'count?_url', 
-            'count-_url', 
-            'count=_url', 
-            'url_length', 
-            'hostname_length_url',
-            'sus_url', 
-            'count-digits_url', 
-            'count-letters_url', 
-            'number_of_parameters_url',
-            'is_encoded_url',
-            'special_count_url',
-            'unusual_character_ratio_url',
-            # Method
-            'Method_enc',
-            # Content
-            'count_dot_content',
-            'count%_content',
-            'count-_content',
-            'count=_content',
-            'sus_content',
-            'count_digits_content',
-            'count_letters_content',
-            'content_length',
-            'is_encoded_content',
-            'special_count_content'
+            'count_dot_path', 'count_dir_path', 'count_embed_domain_path', 
+            'count%_path', 'count?_path', 'count-_path', 'count=_path', 'path_length',
+            'sus_path', 'count-digits_path', 'count-letters_path', 
+            'number_of_parameters_url', 'is_encoded_url',
+            # Features da URL completa (para query, etc.)
+            'special_count_path', 'unusual_character_ratio_path',
+            # Feature do método
+            'Method_enc'
         ]
 
-    # ----- Função principal -----
-    def extract(self, url, method, content):
-        print(f"FEATUREEXTRACTOR(extract) - Extraindo features da URL: {url} com método: {method}")
+    def extract(self, full_url, method):
+        """
+        Extrai um dicionário de features replicando a lógica do notebook de treino.
+        """
+        path = urlparse(full_url).path
         features = {}
-        # Preencha tudo com zero
-        for name in self.feature_names:
-            features[name] = 0
 
-        # Preencha cada campo corretamente
-        features['count_dot_url']               = urlfeat.count_dot(url)
-        features['count_dir_url']               = urlfeat.no_of_dir(url)
-        features['count_embed_domain_url']      = urlfeat.no_of_embed(url)
-        features['count-http']                  = urlfeat.count_http(url)
-        features['count%_url']                  = urlfeat.count_per(url)
-        features['count?_url']                  = urlfeat.count_ques(url)
-        features['count-_url']                  = urlfeat.count_hyphen(url)
-        features['count=_url']                  = urlfeat.count_equal(url)
-        features['url_length']                  = urlfeat.url_length(url)
-        features['hostname_length_url']         = urlfeat.hostname_length(url)
-        features['sus_url']                     = urlfeat.suspicious_words(url)
-        features['count-digits_url']            = urlfeat.digit_count(url)
-        features['count-letters_url']           = urlfeat.letter_count(url)
-        features['number_of_parameters_url']    = urlfeat.number_of_parameters(url)
-        features['is_encoded_url']              = urlfeat.is_encoded(url)
-        features['special_count_url']           = urlfeat.count_special_characters(url)
-        features['unusual_character_ratio_url'] = urlfeat.unusual_character_ratio(url)
+        # --- CORREÇÃO CRÍTICA ---
+        # As chaves do dicionário devem corresponder EXATAMENTE aos nomes em self.feature_names
+        
+        # Features que dependem APENAS do path
+        features['count_dot_path'] = urlfeat.count_dot(path)
+        features['count_dir_path'] = urlfeat.no_of_dir(path)
+        features['count_embed_domain_path'] = urlfeat.no_of_embed(path)
+        features['count%_path'] = urlfeat.count_per(path)
+        features['count?_path'] = urlfeat.count_ques(path)
+        features['count-_path'] = urlfeat.count_hyphen(path)
+        features['count=_path'] = urlfeat.count_equal(path)
+        features['path_length'] = urlfeat.url_length(path)
+        features['sus_path'] = urlfeat.suspicious_words(path)
+        features['count-digits_path'] = urlfeat.digit_count(path)
+        features['count-letters_path'] = urlfeat.letter_count(path)
+        features['special_count_path'] = urlfeat.count_special_characters(path)
+        features['unusual_character_ratio_path'] = urlfeat.unusual_character_ratio(path)
 
-        # Method_enc: Faça igual no treino! Exemplo:
-        if method == "GET":
-            features['Method_enc'] = 0
-        elif method == "POST":
-            features['Method_enc'] = 1
-        else:
-            features['Method_enc'] = 2  # Ou conforme seu LabelEncoder
+        # Features que dependem da URL COMPLETA (incluindo query)
+        features['number_of_parameters_url'] = urlfeat.number_of_parameters(full_url)
+        features['is_encoded_url'] = urlfeat.is_encoded(full_url)
 
-        # Content features (repita o mesmo para content)
-        features['count_dot_content'] = urlfeat.count_dot(content)
-        features['count%_content'] = urlfeat.count_per(content)
-        features['count-_content'] = urlfeat.count_hyphen(content)
-        features['count=_content'] = urlfeat.count_equal(content)
-        features['sus_content'] = urlfeat.suspicious_words(content)
-        features['count_digits_content'] = urlfeat.digit_count(content)
-        features['count_letters_content'] = urlfeat.letter_count(content)
-        features['content_length'] = urlfeat.url_length(content)
-        features['is_encoded_content'] = urlfeat.is_encoded(content)
-        features['special_count_content'] = urlfeat.count_special_characters(content)
-
-        # Retorne na ordem correta!
-        print(f"FEATUREEXTRACTOR(extract) - Features extraídas: {features}")
+        # Feature do método
+        try:
+            features['Method_enc'] = self.le_method.transform([method])[0]
+        except ValueError:
+            features['Method_enc'] = -1
+            
         return features
 
-    def extract_df(self, url, method, content):
+    def extract_df(self, full_url, method):
         """
-        Retorna um DataFrame pronto para o modelo.
+        Retorna um DataFrame pronto para o modelo, garantindo a ordem das colunas.
         """
-        print(f"PORRA")
-        features = self.extract(url, method, content)
-        print(f"FEATUREEXTRACTOR(extract_df) - {features}")
-        return pd.DataFrame([features], columns=self.feature_names)
-
+        features_dict = self.extract(full_url, method)
+        # O reindex garante que as colunas estarão na mesma ordem do treino.
+        return pd.DataFrame([features_dict]).reindex(columns=self.feature_names, fill_value=0)

@@ -9,7 +9,7 @@
 # CARREGAR O DATASET
 # ----------------------------------------------------------------
 import pandas as pd
-csic_data = pd.read_csv('/home/caiotavares/Documents/unesp/tcc/git/smartlogs/data/csic_database.csv')
+csic_data = pd.read_csv('csic_database.csv')
 # csic_data.head()
 
 # %%
@@ -470,6 +470,25 @@ print('Feito!')
 # Aqui o modelo tenta adivinhar a classe (ataque ou não) de cada entrada
 # nos dados de teste x_ts.
 RT_predictions = random_forest_model.predict(x_ts)
+
+# %%
+# import joblib
+
+# # Nome dos arquivos para salvar os artefatos
+# MODEL_FILE = 'random_forest_model.pkl'
+# METHOD_ENCODER_FILE = 'label_encoder_method.pkl'
+# HOST_ENCODER_FILE = 'label_encoder_host.pkl'
+
+# # Salvar o modelo
+# joblib.dump(random_forest_model, MODEL_FILE)
+
+# # Salvar os encoders
+# joblib.dump(le_method, METHOD_ENCODER_FILE)
+# joblib.dump(le_host, HOST_ENCODER_FILE)
+
+# print(f"Modelo salvo em: {MODEL_FILE}")
+# print(f"Encoder de Método salvo em: {METHOD_ENCODER_FILE}")
+# print(f"Encoder de Host salvo em: {HOST_ENCODER_FILE}")
 # %%
 # import joblib
 # joblib.dump(random_forest_model, 'random_forest_model.pkl')
@@ -766,3 +785,23 @@ normal_example_df = pd.DataFrame([normal_example], columns=x_tr.columns)
 # Fazendo a previsão
 prediction = random_forest_model.predict(normal_example_df)
 print("Previsão para o exemplo Normal:", prediction)
+
+# %%
+import joblib
+
+# Nome dos arquivos para salvar os artefatos
+MODEL_FILE = 'random_forest_model.pkl'
+METHOD_ENCODER_FILE = 'label_encoder_method.pkl'
+HOST_ENCODER_FILE = 'label_encoder_host.pkl'
+
+# Salvar o modelo
+joblib.dump(random_forest_model, MODEL_FILE)
+
+# Salvar os encoders
+joblib.dump(le_method, METHOD_ENCODER_FILE)
+joblib.dump(le_host, HOST_ENCODER_FILE)
+
+print(f"Modelo salvo em: {MODEL_FILE}")
+print(f"Encoder de Método salvo em: {METHOD_ENCODER_FILE}")
+print(f"Encoder de Host salvo em: {HOST_ENCODER_FILE}")
+# %%
