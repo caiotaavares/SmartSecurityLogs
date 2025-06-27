@@ -169,3 +169,19 @@ plt.ylabel("Real")
 plt.show()
 
 # %%
+# Feature Importance RANDOM FOREST
+# -----------------------------------------------------------------
+
+importance = model.feature_importances_
+feature_names = x_tr.columns
+
+# feat_imp = pd.Series(importance, index=feature_names)
+# feat_imp.nlargest(10).plot(kind='barh')
+
+feat_imp_df = pd.DataFrame({
+    'Feature': feature_names,
+    'Importance': importance
+}).sort_values(by='Importance', ascending=False)
+
+feat_imp_df.plot(kind='barh', x='Feature', y='Importance', figsize=(10, 6))
+# %%

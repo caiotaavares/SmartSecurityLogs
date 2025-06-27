@@ -40,7 +40,7 @@ def formatar_features(features_df: pd.DataFrame):
     return "\n".join(output_lines)
 
 def run_tests():
-    print("--- A INICIAR TESTE FINAL DO MODELO PATH-ONLY ---")
+    print("--- TESTE DO MODELO ---")
     try:
         analyzer = AttackAnalyzer()
         print("ANALYZER (Path-Only) - Modelo e codificador carregados.")
@@ -52,8 +52,13 @@ def run_tests():
         return
 
     test_cases = [
-        {"desc": "Navegação - Página inicial", "method": "GET", "url": "/tienda1/"},
-        {"desc": "Navegação - Página com diretórios", "method": "GET", "url": "/joguei/o/lixo/fora.php"},
+        {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/carrito.jsp"},
+        {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/entrar.jsp?errorMsg=Credenciales+incorrectas"},
+        {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/miembros.jsp"},
+        {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/pagar.jsp?modo=insertar&precio=2672&B1=Pasar+por+caja"},
+        {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/productos.jsp"},
+        {"desc": "Navegação", "method": "GET", "url": "/tienda1/global/menum.jsp"},
+        {"desc": "Navegação - Página com diretórios", "method": "GET", "url": "/joguei/o/lixo/fora.html"},
         {"desc": "Navegação - Ver produtos", "method": "GET", "url": "/tienda1/publico/productos.jsp"},
         {"desc": "Navegação - Adicionar item com query", "method": "GET", "url": "/tienda1/publico/anadir.jsp?id=4&nombre=ZAPATILLAS&precio=90"},
         {"desc": "Ataque - SQL Injection", "method": "GET", "url": "/tienda1/publico/productos.jsp?id=' or '1'='1"},
