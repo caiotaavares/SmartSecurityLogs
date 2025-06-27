@@ -4,10 +4,10 @@ from . import features
 
 class AttackAnalyzer:
     def __init__(self,
-                 # Carrega os ficheiros corretos por defeito
-                 model_path='data/path_only_model.pkl',
-                 method_encoder_path='data/path_only_method_encoder.pkl'):
-        
+        # Carrega os ficheiros corretos por defeito
+        model_path='data/path_only_model.pkl',
+        method_encoder_path='data/path_only_method_encoder.pkl'):
+
         print("ANALYZER (Path-Only) - A carregar modelo e codificador...")
         self.model = joblib.load(model_path)
         le_method = joblib.load(method_encoder_path)
@@ -22,7 +22,6 @@ class AttackAnalyzer:
         """
         method = req.method
         
-        # --- MUDANÇA ---
         # O extrator agora precisa da URL completa para replicar a lógica do treino.
         # Vamos assumir que req.url já contém a URL completa (sem " HTTP/1.1").
         # Se req.url puder ter o sufixo, limpe-o aqui também.

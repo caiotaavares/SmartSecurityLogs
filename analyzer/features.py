@@ -8,7 +8,7 @@ class FeatureExtractor:
 
         # --- CORREÇÃO CRÍTICA ---
         # Esta lista DEVE ser idêntica, em nomes e ordem, à lista de colunas
-        # usada para treinar o modelo no seu notebook.
+        # usada para treinar o modelo
         self.feature_names = [
             'count_dot_path', 'count_dir_path', 'count_embed_domain_path', 
             'count%_path', 'count?_path', 'count-_path', 'count=_path', 'path_length',
@@ -28,9 +28,6 @@ class FeatureExtractor:
         path = urlparse(full_url).path
         features = {}
         query = urlparse(full_url).query
-
-        # --- CORREÇÃO CRÍTICA ---
-        # As chaves do dicionário devem corresponder EXATAMENTE aos nomes em self.feature_names
         
         # Features que dependem APENAS do path
         features['count_dot_path'] = urlfeat.count_dot(path)
@@ -46,13 +43,13 @@ class FeatureExtractor:
         features['count-letters_path'] = urlfeat.letter_count(path)
         features['special_count_path'] = urlfeat.count_special_characters(path)
         features['unusual_character_ratio_path'] = urlfeat.unusual_character_ratio(path)
+        features['sus_path'] = urlfeat.suspicious_words(path)
 
         # Features que dependem da URL COMPLETA (incluindo query)
         features['number_of_parameters_url'] = urlfeat.number_of_parameters(full_url)
         features['is_encoded_url'] = urlfeat.is_encoded(full_url)
-
-        # query
-        features['sus_path'] = urlfeat.suspicious_words(path)
+        
+        # Features que dependem da query
         features['sus_query'] = urlfeat.suspicious_words(query)
         
         # Feature do método
