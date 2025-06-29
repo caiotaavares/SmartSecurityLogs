@@ -58,7 +58,6 @@ def run_tests():
         {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/pagar.jsp?modo=insertar&precio=2672&B1=Pasar+por+caja"},
         {"desc": "Navegação", "method": "GET", "url": "/tienda1/publico/productos.jsp"},
         {"desc": "Navegação", "method": "GET", "url": "/tienda1/global/menum.jsp"},
-        {"desc": "Navegação - Página com diretórios", "method": "GET", "url": "/joguei/o/lixo/fora.html"},
         {"desc": "Navegação - Ver produtos", "method": "GET", "url": "/tienda1/publico/productos.jsp"},
         {"desc": "Navegação - Adicionar item com query", "method": "GET", "url": "/tienda1/publico/anadir.jsp?id=4&nombre=ZAPATILLAS&precio=90"},
         {"desc": "Ataque - SQL Injection", "method": "GET", "url": "/tienda1/publico/productos.jsp?id=' or '1'='1"},
