@@ -119,28 +119,3 @@ def unusual_character_ratio(url):
     unusual_characters = re.sub(r'[a-zA-Z0-9\s\-._]', '', url)
     unusual_count = len(unusual_characters)
     return unusual_count / total_characters
-
-# def count_dot(url): return url.count('.')
-# def no_of_dir(url): return urlparse(url).path.count('/')
-# def no_of_embed(url): return urlparse(url).path.count('//')
-# def count_per(url): return url.count('%')
-# def count_ques(url): return url.count('?')
-# def count_hyphen(url): return url.count('-')
-# def count_equal(url): return url.count('=')
-# def url_length(url): return len(str(url))
-# def suspicious_words(url):
-#     score_map = { 'error': 30, 'SELECT': 50, 'FROM': 50, 'WHERE': 50, 'DELETE': 50, 'USERS': 50, 'DROP': 50, 'CREATE': 50, 'INJECTED': 50, 'TABLE': 50, 'alert': 30, 'javascript': 20, 'cookie': 25, '--': 30, '.exe': 30, '.php': 20, '.js': 10, 'admin': 10, 'administrator': 10, '\'': 30, 'password': 15, 'login': 15, 'incorrect': 20, 'pwd': 15, 'tamper': 25, 'vaciar': 20, 'carrito': 25, 'wait': 30, 'delay': 35, 'set': 20, 'steal': 35, 'hacker': 35, 'proxy': 35, 'location': 30, 'document.cookie': 40, 'document': 20, 'set-cookie': 40, 'create': 40, 'cmd': 40, 'dir': 30, 'shell': 40, 'reverse': 30, 'bin': 20, 'cookiesteal': 40, 'LIKE': 30, 'UNION': 35, 'include': 30, 'file': 20, 'tmp': 25, 'ssh': 40, 'exec': 30, 'cat': 25, 'etc': 30, 'fetch': 25, 'eval': 30, 'malware': 45, 'ransomware': 45, 'phishing': 45, 'exploit': 45, 'virus': 45, 'trojan': 45, 'backdoor': 45, 'spyware': 45, 'rootkit': 45, 'credential': 30, 'inject': 30, 'script': 25, 'iframe': 25, 'src=': 25, 'onerror': 30, 'prompt': 20, 'confirm': 20, 'expression': 30, r'function\(': 20, 'xmlhttprequest': 30, 'xhr': 20, 'window.': 20, 'document.': 20, 'click': 15, 'mouseover': 15, 'onload': 20, 'onunload': 20 }
-#     matches = re.findall(r'(?i)' + '|'.join(score_map.keys()), url)
-#     return sum(score_map.get(match.lower(), 0) for match in matches)
-# def digit_count(url): return sum(c.isdigit() for c in url)
-# def letter_count(url): return sum(c.isalpha() for c in url)
-# def count_special_characters(url): return len(re.sub(r'[a-zA-Z0-9\s]', '', url))
-# def number_of_parameters(url):
-#     params = urlparse(url).query
-#     return 0 if not params else len(params.split('&'))
-# def is_encoded(url): return 1 if '%' in url.lower() else 0
-# def unusual_character_ratio(url):
-#     total_characters = len(url)
-#     if total_characters == 0: return 0
-#     unusual_characters = re.sub(r'[a-zA-Z0-9\s\-._]', '', url)
-#     return len(unusual_characters) / total_characters
