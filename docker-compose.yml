@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:80" # Expõe o Nginx na porta 8080s
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./api
+      dockerfile: ../Dockerfile.python
+    environment:
+      - REDIS_HOST=redis
+    command: >
+      gunicorn --bind 0.0.0.0:5000 
+               --workers 4 
+               api:app
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: ../Dockerfile.python
+    environment:
+      - REDIS_HOST=redis
+    command: python worker.py
+    depends_on:
+      - redis
+      - api # Garante que a api suba antes, embora não seja estritamente necessário
+
+  redis:
+    image: "redis:7.2-alpine"
+    ports:
+      - "6379:6379" # Opcional, para depuração
