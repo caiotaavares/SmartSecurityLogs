@@ -43,7 +43,6 @@ class FeatureExtractor:
         features['count-letters_path'] = urlfeat.letter_count(path)
         features['special_count_path'] = urlfeat.count_special_characters(path)
         features['unusual_character_ratio_path'] = urlfeat.unusual_character_ratio(path)
-        features['sus_path'] = urlfeat.suspicious_words(path)
 
         # Features que dependem da URL COMPLETA (incluindo query)
         features['number_of_parameters_url'] = urlfeat.number_of_parameters(full_url)
