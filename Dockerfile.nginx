@@ -2,4 +2,4 @@ FROM nginx:1.27-alpine
 
 # Remove a configuração padrão e copia a nossa
 RUN rm /etc/nginx/nginx.conf
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx/nginx.conf /etc/nginx/nginx.conf

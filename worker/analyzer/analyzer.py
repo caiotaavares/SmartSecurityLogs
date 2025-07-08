@@ -5,8 +5,8 @@ from . import features
 class AttackAnalyzer:
     def __init__(self,
         # Carrega os ficheiros corretos por defeito
-        model_path='../data/path_only_model.pkl',
-        method_encoder_path='../data/path_only_method_encoder.pkl'):
+        model_path='data/path_only_model.pkl',
+        method_encoder_path='data/path_only_method_encoder.pkl'):
 
         print("ANALYZER (Path-Only) - A carregar modelo e codificador...")
         self.model = joblib.load(model_path)
