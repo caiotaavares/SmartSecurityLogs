@@ -14,7 +14,6 @@ class AttackAnalyzer:
         self.feature_extractor = FeatureExtractor.FeatureExtractor(le_method)
         print("ANALYZER (Path-Only) - Pronto.")
 
-    # No método analyze da classe AttackAnalyzer
     def analyze(self, req):
         """
         Analisa a requisição focando exclusivamente no path da URL e no método.
