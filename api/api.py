@@ -5,13 +5,9 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-# --- CONFIGURAÇÃO DOS SERVIÇOS ---
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
 TASK_QUEUE_NAME = "attack_analysis_queue"
-
-# A conexão agora será criada dentro da função de request
-# para garantir que ela seja sempre nova e válida para cada processo worker.
 
 @app.route("/log", methods=["POST"])
 def log_request():
@@ -20,9 +16,8 @@ def log_request():
     e enfileira a tarefa para processamento assíncrono.
     """
     try:
-        # --- MUDANÇA CRÍTICA: Conexão criada aqui ---
         redis_conn = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
-        redis_conn.ping() # Testa a conexão
+        redis_conn.ping()
         
         data_to_analyze = {
             "url": request.headers.get("X-Original-URI", ""),

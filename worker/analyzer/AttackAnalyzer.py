@@ -1,10 +1,9 @@
 import joblib
 import pandas as pd
-from . import features
+from . import FeatureExtractor
 
 class AttackAnalyzer:
     def __init__(self,
-        # Carrega os ficheiros corretos por defeito
         model_path='data/path_only_model.pkl',
         method_encoder_path='data/path_only_method_encoder.pkl'):
 
@@ -12,7 +11,7 @@ class AttackAnalyzer:
         self.model = joblib.load(model_path)
         le_method = joblib.load(method_encoder_path)
         
-        self.feature_extractor = features.FeatureExtractor(le_method)
+        self.feature_extractor = FeatureExtractor.FeatureExtractor(le_method)
         print("ANALYZER (Path-Only) - Pronto.")
 
     # No método analyze da classe AttackAnalyzer
@@ -22,12 +21,8 @@ class AttackAnalyzer:
         """
         method = req.method
         
-        # O extrator agora precisa da URL completa para replicar a lógica do treino.
-        # Vamos assumir que req.url já contém a URL completa (sem " HTTP/1.1").
-        # Se req.url puder ter o sufixo, limpe-o aqui também.
         full_url = req.url 
 
-        # A chamada para o extrator agora passa a URL completa.
         features_df = self.feature_extractor.extract_df(full_url, method)
         
         prediction_code = self.model.predict(features_df)[0]

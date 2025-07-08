@@ -1,5 +1,5 @@
 import pandas as pd
-from worker.analyzer.analyzer import AttackAnalyzer
+from worker.analyzer.AttackAnalyzer import AttackAnalyzer
 from urllib.parse import urlparse
 
 # Define a largura máxima de exibição do pandas para evitar quebras de linha indesejadas

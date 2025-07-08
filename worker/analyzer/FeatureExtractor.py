@@ -1,12 +1,11 @@
 import pandas as pd
 from urllib.parse import urlparse
-from .urlfeatures import urlfeatures as urlfeat
+from .urlfeatures.UrlFeatures import UrlFeatures as urlfeat
 
 class FeatureExtractor:
     def __init__(self, le_method):
         self.le_method = le_method
 
-        # --- CORREÇÃO CRÍTICA ---
         # Esta lista DEVE ser idêntica, em nomes e ordem, à lista de colunas
         # usada para treinar o modelo
         self.feature_names = [

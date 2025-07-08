@@ -1,5 +1,5 @@
 # Importamos a classe que queremos testar
-from worker.analyzer.analyzer import AttackAnalyzer
+from worker.analyzer.AttackAnalyzer import AttackAnalyzer
 
 # Criamos um objeto de requisição falso para o teste
 class MockRequest:
